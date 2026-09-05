@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="WeatherPredict - Decision Tree weather prediction demo">
+  <title>WeatherPredict | ML Weather Prediction</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a class="brand" href="#home" aria-label="WeatherPredict home">
+        <span class="brand-icon">🌤️</span>
+        <span><strong>WeatherPredict</strong><small>Decision Tree ML Demo</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="#home">Home</a>
+        <a href="#predict">Predict</a>
+        <a href="#model">Model</a>
+        <a href="#dataset">Dataset</a>
+        <a href="#about">About</a>
+      </nav>
+      <div class="theme-toggle" role="group" aria-label="Theme selection">
+        <button type="button" class="theme-btn" data-theme="light" aria-label="Use light mode">☀️ <span>Light</span></button>
+        <button type="button" class="theme-btn" data-theme="dark" aria-label="Use dark mode">🌙 <span>Dark</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-glow hero-glow-one"></div><div class="hero-glow hero-glow-two"></div>
+      <div class="container hero-content">
+        <div class="hero-copy">
+          <span class="eyebrow">🤖 MACHINE LEARNING</span>
+          <h1>Weather Prediction<br><span>Made Simple</span></h1>
+          <p>Enter real weather parameters and let a trained Decision Tree Classifier predict one of six weather conditions with a confidence score.</p>
+          <div class="hero-points"><span>✓ 10 weather features</span><span>✓ 6 weather classes</span><span>✓ Instant prediction</span></div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="weather-orb">⛅</div>
+          <div class="floating-weather sun-a">☀️</div>
+          <div class="floating-weather cloud-a">☁️</div>
+          <div class="floating-weather cloud-b">🌧️</div>
+          <div class="floating-weather cloud-c">☁️</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard container" id="predict">
+      <div class="dashboard-grid">
+        <section class="card input-card">
+          <div class="card-header"><div><span class="section-kicker">INPUT DATA</span><h2>Weather Inputs</h2><p>Enter values within the indicated ranges.</p></div><span class="header-icon">⚙️</span></div>
+          <div class="presets" aria-label="Weather presets">
+            <span class="presets-label">Quick presets</span>
+            <button type="button" class="preset-btn" data-preset="Sunny">☀️ Sunny</button>
+            <button type="button" class="preset-btn" data-preset="Partly Cloudy">⛅ Partly Cloudy</button>
+            <button type="button" class="preset-btn" data-preset="Cloudy">☁️ Cloudy</button>
+            <button type="button" class="preset-btn" data-preset="Rainy">🌧️ Rainy</button>
+            <button type="button" class="preset-btn" data-preset="Thunderstorm">⛈️ Thunderstorm</button>
+            <button type="button" class="preset-btn" data-preset="Foggy">🌫️ Foggy</button>
+            <button type="button" class="preset-btn preset-variant" data-preset="Hot Sunny">🔥 Hot Sunny</button>
+            <button type="button" class="preset-btn preset-variant" data-preset="Light Rain">🌦️ Light Rain</button>
+            <button type="button" class="preset-btn preset-variant" data-preset="Severe Storm">🌩️ Severe Storm</button>
+            <button type="button" class="preset-btn preset-variant" data-preset="Dense Fog">🌫️ Dense Fog</button>
+          </div>
+          <form id="weather-form" class="inputs-grid" novalidate>
+            <div class="input-group"><label for="temperature">🌡️ Temperature (°C)</label><input id="temperature" type="number" value="25" step="0.1" placeholder="25.0" required><small>-20 to 50</small></div>
+            <div class="input-group"><label for="humidity">💧 Humidity (%)</label><input id="humidity" type="number" value="60" step="0.1" placeholder="60" required><small>0 to 100</small></div>
+            <div class="input-group"><label for="wind_speed">💨 Wind Speed (km/h)</label><input id="wind_speed" type="number" value="15" step="0.1" placeholder="15" required><small>0 to 120</small></div>
+            <div class="input-group"><label for="wind_direction">🧭 Wind Direction (°)</label><input id="wind_direction" type="number" value="180" step="0.1" placeholder="180" required><small>0 to 360</small></div>
+            <div class="input-group"><label for="cloud_cover">☁️ Cloud Cover (%)</label><input id="cloud_cover" type="number" value="50" step="0.1" placeholder="50" required><small>0 to 100</small></div>
+            <div class="input-group"><label for="pressure">🔵 Atmospheric Pressure (hPa)</label><input id="pressure" type="number" value="1013" step="0.1" placeholder="1013" required><small>950 to 1050</small></div>
+            <div class="input-group"><label for="visibility">👁️ Visibility (km)</label><input id="visibility" type="number" value="10" step="0.1" placeholder="10" required><small>0 to 30</small></div>
+            <div class="input-group"><label for="precipitation">🌧️ Precipitation (mm)</label><input id="precipitation" type="number" value="2" step="0.1" placeholder="2" required><small>0 to 50</small></div>
+            <div class="input-group"><label for="uv_index">☀️ UV Index</label><input id="uv_index" type="number" value="5" step="0.1" placeholder="5" required><small>0 to 14</small></div>
+            <div class="input-group"><label for="dew_point">💦 Dew Point (°C)</label><input id="dew_point" type="number" value="15" step="0.1" placeholder="15" required><small>-20 to 40</small></div>
+            <div class="form-actions"><button class="primary-btn" id="predict-btn" type="submit">✦ Predict Weather <span>→</span></button><button class="secondary-btn" id="reset-btn" type="button">↻ Reset</button></div>
+            <p class="form-message" id="form-message" role="alert" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="card result-card" aria-live="polite">
+          <div class="card-header"><div><span class="section-kicker">MODEL OUTPUT</span><h2>Prediction Result</h2><p>Decision Tree prediction and confidence.</p></div><span class="header-icon">📈</span></div>
+          <div class="result-content">
+            <div id="result-placeholder" class="result-placeholder"><div class="placeholder-icon">🔮</div><h3>Ready for a Prediction</h3><p>Fill in the weather parameters and select <strong>Predict Weather</strong>.</p></div>
+            <div id="prediction-loading" class="prediction-loading" hidden aria-live="polite">
+              <div class="loading-icon">⛅</div>
+              <h3>Predicting Weather...</h3>
+              <p>Decision Tree is analyzing the weather inputs.</p>
+              <div class="loading-bar" role="progressbar" aria-label="Prediction in progress"><span></span></div>
+            </div>
+            <div id="result-prediction" class="result-prediction" hidden>
+              <div class="prediction-icon" id="prediction-icon">⛅</div><span class="prediction-label">PREDICTED WEATHER</span><h3 id="prediction-value">--</h3>
+              <div class="confidence-head"><span>Confidence</span><strong id="confidence-value">--%</strong></div><div class="confidence-bar"><div id="confidence-fill" class="confidence-fill"></div></div>
+              <p class="prediction-description" id="prediction-description"></p>
+              <div class="summary"><h4>Input Summary</h4><div id="summary-grid" class="summary-grid"></div></div>
+              <small class="timestamp" id="prediction-timestamp"></small>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="info-section container">
+      <div class="info-grid">
+        <article class="card info-card" id="model"><div class="card-header"><div><span class="section-kicker">EVALUATION</span><h2>Model Performance</h2></div>📊</div><div class="metrics-grid"><div><span>Accuracy</span><strong id="metric-accuracy">--</strong></div><div><span>Precision</span><strong id="metric-precision">--</strong></div><div><span>Recall</span><strong id="metric-recall">--</strong></div><div><span>F1 Score</span><strong id="metric-f1">--</strong></div></div></article>
+        <article class="card info-card" id="dataset"><div class="card-header"><div><span class="section-kicker">TRAINING DATA</span><h2>Dataset Information</h2></div>📁</div><div class="details"><p><span>Total records</span><strong id="dataset-records">--</strong></p><p><span>Input features</span><strong id="dataset-features">10</strong></p><p><span>Weather classes</span><strong id="dataset-class-count">6</strong></p><p><span>Classes</span><strong id="dataset-classes">--</strong></p></div></article>
+        <article class="card info-card about-card" id="about"><div class="card-header"><div><span class="section-kicker">ABOUT THE MODEL</span><h2>How WeatherPredict Works</h2></div>🌦️</div><div class="about-copy"><p><strong>WeatherPredict uses a Decision Tree Classifier</strong> trained on the project's weather dataset. It learns patterns between 10 weather measurements and the target weather condition.</p><p>For a new set of measurements, the tree follows learned decision rules and predicts one of <strong>6 classes</strong>: Sunny, Partly Cloudy, Cloudy, Rainy, Thunderstorm, or Foggy.</p><p class="about-flow"><span>10 Inputs</span><b>→</b><span>Decision Tree</span><b>→</b><span>6 Conditions</span></p></div></article>
+      </div>
+    </section>
+
+    <section class="history-section container" id="history">
+      <article class="card history-card">
+        <div class="card-header">
+          <div><span class="section-kicker">RECENT PREDICTIONS</span><h2>Prediction History</h2><p>Your latest predictions are saved in this browser.</p></div>
+          <button type="button" class="secondary-btn clear-history" id="clear-history">Clear History</button>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer" id="contact"><div class="container"><strong>WeatherPredict</strong><span>Machine Learning Demo • Decision Tree Classifier</span></div></footer>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
