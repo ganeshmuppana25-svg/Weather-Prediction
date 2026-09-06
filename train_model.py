@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.calibration import CalibratedClassifierCV
 import joblib
 import os
 
@@ -195,16 +196,20 @@ print(f"Training samples: {len(X_train)}")
 print(f"Testing samples: {len(X_test)}")
 
 # ============================================================
-# STEP 6: Train Decision Tree Classifier
+# STEP 6: Train Calibrated Decision Tree Classifier
 # ============================================================
-print("\nTraining Decision Tree Classifier...")
-dt_classifier = DecisionTreeClassifier(
+print("\nTraining Calibrated Decision Tree Classifier...")
+# Wrap DecisionTreeClassifier with CalibratedClassifierCV to produce
+# well-calibrated probabilities instead of the extreme 0%/100% outputs
+# that pure leaf nodes of a deep tree produce.
+base_tree = DecisionTreeClassifier(
     max_depth=15,
     min_samples_split=10,
     min_samples_leaf=5,
     random_state=42,
     class_weight='balanced'
 )
+dt_classifier = CalibratedClassifierCV(base_tree, method='sigmoid', cv=5)
 dt_classifier.fit(X_train, y_train)
 print("Model training complete!")
 

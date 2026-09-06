@@ -162,6 +162,64 @@ button { cursor:pointer; }
 .preset-variant { opacity: .9; }
 .preset-variant:hover { opacity: 1; }
 
+/* Button animations for Predict, Reset, and Clear History */
+.primary-btn,
+.secondary-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.primary-btn::after,
+.secondary-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.primary-btn:hover,
+.secondary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+}
+
+.primary-btn:hover::after,
+.secondary-btn:hover::after {
+  width: 200%;
+  height: 200%;
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);
+}
+
+.primary-btn:disabled {
+  transform: none;
+  box-shadow: none;
+}
+
+.primary-btn:disabled::after {
+  display: none;
+}
+
+@keyframes buttonPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(56, 189, 248, 0); }
+}
+
+.primary-btn:not(:disabled) {
+  animation: buttonPulse 2.5s ease-in-out infinite;
+}
+
 /* Confidence grows from 0 to the model's returned probability. */
 .confidence-fill {
   transform-origin: left center;
